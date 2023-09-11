@@ -3,6 +3,18 @@ var db = undefined;
 let abortController = null;
 $("#display").hide();
 
+async function loadDatabase() {
+    if (db == undefined) {
+        const start = new Date().getTime();
+        const dataPromise = fetch("./static/CHS-DRG.db").then(res => res.arrayBuffer());
+        const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
+        db = new SQL.Database(new Uint8Array(buf));
+        const end = new Date().getTime();
+        console.log("CHS-DRG.db 加载完成：", (end-start)/1000, "s");
+    }
+}
+loadDatabase();
+
 function findoutWeights(adrg) {
     // weights 是字典，可直接使用
     let relative_groupnames = Object.keys(weights).filter((groupname) => groupname.slice(0, 3) == adrg);
@@ -37,9 +49,6 @@ function parseResult(result) {
         $("#display").hide();
     }
     $("#results").html(resultHtml);
-
-    // TODO 根据 adrg 分组补全费率信息
-    // TODO 链接入组规则
 }
 
 const search = async (abortSignal, keyword, obscure) => {
@@ -47,13 +56,6 @@ const search = async (abortSignal, keyword, obscure) => {
         const error = new DOMException("Search aborted by the user", "AbortError");
         if (abortSignal.aborted) {
             return reject(error);
-        }
-
-        // 开始检索工作
-        if (db == undefined) {
-            const dataPromise = fetch("./static/CHS-DRG.db").then(res => res.arrayBuffer());
-            const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
-            db = new SQL.Database(new Uint8Array(buf));
         }
         const kv = {
             ":keyword": keyword, 
@@ -109,12 +111,3 @@ $("#search_button").on("click", function () {
     var text = $("#search_text").val();
     readyToSearch(text, false); // 严格匹配
 });
-
-// diagnoseList.on("click", ".suggestItem", function (e) {
-//     var d_code = $(this).attr("data-item");
-//     var d_name = $(this).text();
-//     currentDiagnoses.push(d_code + " - " + d_name);
-//     console.log(currentDiagnoses);
-//     clearList();
-//     updateSuggestions();
-// });
