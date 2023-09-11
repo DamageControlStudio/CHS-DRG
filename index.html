@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>DRG 分组查询工具</title>
+    <link rel="stylesheet" href="./static/bulma.min.css">
+    <script src="./static/jquery.min.js"></script>
+    <script src="./static/sql-wasm.js"></script>
+
+</head>
+
+<body>
+    <div class="section">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+            <ul>
+                <li><a href="https://damagecongtrol.studio">Damage Control Studio</a></li>
+                <li class="is-active"><a href="#" aria-current="page">DRG 分组查询工具</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="section">
+        <div class="field has-addons">
+            <p class="control is-expanded">
+                <input id="search_text" class="input" type="text">
+            </p>
+            <p class="control">
+                <a id="search_button" class="button">
+                    严格匹配
+                </a>
+            </p>
+        </div>
+
+        <div id="display" class="container">
+            <table class="table is-hoverable">
+                <thead>
+                    <tr>
+                        <th>编码</th>
+                        <th>名称</th>
+                        <th>分组</th>
+                        <th>权重</th>
+                    </tr>
+                </thead>
+                <tbody id="results">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+    <div class="section">
+        <footer class="footer">
+            <div class="content has-text-centered">
+                <div>数据仅供参考</div>
+                <div>国家医疗保障疾病诊断相关分组(CHS-DRG) 分组方案（1.1版）</div>
+                <div>基于医保疾病诊断和手术操作分类与代码2.0版</div>
+                <div>
+                    build with:
+                    <a href="https://sql.js.org" target="_blank">sql.js</a>,
+                    <a href="https://jquery.com" target="_blank">jQuery</a>,
+                    <a href="https://bulma.io" target="_blank">Bulma</a>;
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script src="./static/2022.weights.js"></script>
+    <script src="./static/main.js"></script>
+</body>
+
+</html>
