@@ -11,6 +11,8 @@ async function loadDatabase() {
         db = new SQL.Database(new Uint8Array(buf));
         const end = new Date().getTime();
         console.log("CHS-DRG.db 加载完成：", (end-start)/1000, "s");
+        $("#search_text").removeAttr("placeholder");
+        $("#search_text").removeAttr("disabled");
     }
 }
 loadDatabase();
@@ -21,7 +23,7 @@ function findoutWeights(adrg) {
     var weight_label = '<div class="field is-grouped is-grouped-multiline">';
     relative_groupnames.map(
         function(item) {
-            weight_label += '<div class="control"><div class="tags has-addons"><span class="tag is-dark">' + item + '</span><span class="tag is-info">' + weights[item] + "</span></div></div>";
+            weight_label += '<div class="control"><div class="tags has-addons"><span class="tag">' + item + '</span><span class="tag is-info">' + weights[item] + "</span></div></div>";
         }
     );
     weight_label += '</div>';
@@ -60,7 +62,7 @@ const search = async (abortSignal, keyword, obscure) => {
         const kv = {
             ":keyword": keyword, 
             ":obscureword": "%" + keyword + "%",
-            ":limit": 100,
+            ":limit": 128,
         };
         var stmt = "";
         if (obscure) {
@@ -82,7 +84,7 @@ const search = async (abortSignal, keyword, obscure) => {
     });
 };
 
-function readyToSearch(keyword, obscure=false) {
+function readyToSearch() {
     if (abortController) {
         abortController.abort();
         abortController = null;
@@ -90,6 +92,11 @@ function readyToSearch(keyword, obscure=false) {
     }
     abortController = new AbortController();
     try {
+        var keyword = $("#search_text").val();
+        var obscure = true;
+        if ($("input[name='search_mode']").get(0).checked) {
+            obscure = false;
+        }
         search(abortController.signal, keyword, obscure);
     } catch {
         
@@ -98,16 +105,10 @@ function readyToSearch(keyword, obscure=false) {
     }
 }
 
-$("#search_text").on("keyup", function (e) {
-    var text = $(this).val();
-    // 38：向上箭头；40：向下箭头；13：Enter键
-    // if (e.keyCode != 38 && e.keyCode != 40 && e.keyCode != 13) {
-    //     readyToSearch(text);
-    // }
-    readyToSearch(text, true); // 模糊查找
+$("#search_text").on("input", function (e) {
+    readyToSearch();
 });
 
-$("#search_button").on("click", function () {
-    var text = $("#search_text").val();
-    readyToSearch(text, false); // 严格匹配
+$("input[name='search_mode']").on("click", function () {
+    readyToSearch();
 });
