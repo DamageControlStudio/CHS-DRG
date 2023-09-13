@@ -1,33 +1,41 @@
 const sqlPromise = initSqlJs({locateFile: file => `./static/sql-wasm.wasm`});
 var db = undefined;
 let abortController = null;
-$("#display").hide();
+
 
 async function loadDatabase() {
     if (db == undefined) {
         const start = new Date().getTime();
-        const dataPromise = fetch("./static/CHS-DRG.db").then(res => res.arrayBuffer());
+        const dataPromise = fetch("./static/CHS-DRG.frontend.db").then(res => res.arrayBuffer());
         const [SQL, buf] = await Promise.all([sqlPromise, dataPromise]);
         db = new SQL.Database(new Uint8Array(buf));
         const end = new Date().getTime();
-        console.log("CHS-DRG.db 加载完成：", (end-start)/1000, "s");
+        console.log("数据库加载完成：", (end-start)/1000, "s");
         $("#search_text").removeAttr("placeholder");
         $("#search_text").removeAttr("disabled");
     }
 }
 loadDatabase();
 
+
 function findoutWeights(adrg) {
-    // weights 是字典，可直接使用
-    let relative_groupnames = Object.keys(weights).filter((groupname) => groupname.slice(0, 3) == adrg);
-    var weight_label = '<div class="field is-grouped is-grouped-multiline">';
-    relative_groupnames.map(
-        function(item) {
-            weight_label += '<div class="control"><div class="tags has-addons"><span class="tag">' + item + '</span><span class="tag is-info">' + weights[item] + "</span></div></div>";
-        }
-    );
-    weight_label += '</div>';
-    return weight_label;
+    if (adrg) {
+        // weights 是字典，可直接使用
+        let relative_groupnames = Object.keys(weights).filter((groupname) => groupname.slice(0, 3) == adrg);
+        var weight_label = '<div class="field is-grouped is-grouped-multiline">';
+        relative_groupnames.map(
+            function(item) {
+                weight_label += '<div class="control"><div class="tags has-addons"><span class="tag">';
+                weight_label += item + '</span><span class="tag is-info">';
+                weight_label += weights[item] + "</span></div></div>";
+            }
+        );
+        weight_label += '</div>';
+        return weight_label;
+    } else {
+        return ""
+    }
+
 }
 
 function parseResult(result) {
@@ -36,14 +44,32 @@ function parseResult(result) {
         const l = result[0].values.length;
         console.log("检索到", l, "条结果"); // 应该展示在网页中
         for(let i = 0; i < l; i++) {
+            thecode = result[0].values[i][0];
+            thename = result[0].values[i][1];
+            adrg = result[0].values[i][2];
+            cc = result[0].values[i][3];
+            mcc = result[0].values[i][4];
+            ex = result[0].values[i][5];
             resultHtml += "<tr><td>";
-            resultHtml += result[0].values[i][0];
+            resultHtml += thecode;
             resultHtml += "</td><td>";
-            resultHtml += result[0].values[i][1];
+            resultHtml += thename;
             resultHtml += "</td><td>";
-            resultHtml += '<a href="./static/adrg/' + result[0].values[i][2] + '.html" target="_blank">' + result[0].values[i][2] + '</a>';
+            if (adrg!=null) {
+                resultHtml += '<a href="./static/adrg/' + adrg + '.html" target="_blank" class="control"><div class="tags has-addons"><span class="tag is-success">' + adrg + '</span></div></a>';
+            } else {
+                resultHtml += "";
+            }
             resultHtml += "</td><td>";
-            resultHtml += findoutWeights(result[0].values[i][2]);
+            resultHtml += findoutWeights(adrg);
+            resultHtml += "</td><td>";
+            if (cc==1&&mcc==1) {
+                console.log("数据出错：不可能同时为CC和MCC");
+            } else if (cc==1) {
+                resultHtml += '<a href="./static/ex/T' + ex + '.html" target="_blank"><span class="tag is-warning">CC</span></a>';
+            } else if (mcc==1) {
+                resultHtml += '<a href="./static/ex/T' + ex + '.html" target="_blank"><span class="tag is-danger">MCC</span></a>';
+            }
             resultHtml += "</td></tr>";
         }
         $("#display").show();
@@ -62,17 +88,13 @@ const search = async (abortSignal, keyword, obscure) => {
         const kv = {
             ":keyword": keyword, 
             ":obscureword": "%" + keyword + "%",
-            ":limit": 128,
+            ":limit": 256,
         };
         var stmt = "";
         if (obscure) {
-            stmt = `SELECT code, name, adrg FROM operation WHERE name LIKE :obscureword 
-                            UNION SELECT code, name, adrg FROM diagnose WHERE name LIKE :obscureword 
-                            LIMIT :limit;`;
+            stmt = `SELECT code, name, adrg, cc, mcc, ex FROM drg WHERE name LIKE :obscureword LIMIT :limit;`;
         } else {
-            stmt = `SELECT code, name, adrg FROM operation WHERE name = :keyword 
-                            UNION SELECT code, name, adrg FROM diagnose WHERE name = :keyword 
-                            LIMIT :limit;`;
+            stmt = `SELECT code, name, adrg, cc, mcc, ex FROM drg WHERE name = :keyword LIMIT :limit;`;
         }
         const result = db.exec(stmt, kv);
         parseResult(result);

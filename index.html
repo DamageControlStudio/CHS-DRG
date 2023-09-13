@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>DRG 分组查询工具</title>
     <link rel="stylesheet" href="./static/bulma.min.css">
+    <link rel="stylesheet" href="./static/font-awesome/css/all.min.css">
     <script src="./static/jquery.min.js"></script>
     <script src="./static/sql-wasm.js"></script>
-
+    <link rel="shortcut icon" href="./static/favicon.ico">
 </head>
 
 <body>
@@ -23,14 +24,13 @@
 
     <div class="section">
         <div class="field has-addons">
-            <p class="control is-expanded">
+            <p class="control is-expanded has-icons-left">
                 <input id="search_text" class="input" type="text" placeholder="正在加载数据库..." disabled>
+                <span class="icon is-left">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
             </p>
         </div>
-
-        <!-- 不优雅的缩进 -->
-        &nbsp;
-
         <label class="radio">
             <input type="radio" name="search_mode">
             严格匹配
@@ -39,11 +39,7 @@
             <input type="radio" name="search_mode" checked>
             模糊查找
         </label>
-
-        <!-- 不优雅的间隔 -->
-        <br> 
-        
-        <div id="display">
+        <div id="display" hidden>
             <table class="table is-fullwidth is-hoverable">
                 <thead>
                     <tr>
@@ -51,6 +47,7 @@
                         <th>名称</th>
                         <th>分组</th>
                         <th>权重</th>
+                        <th>可作为</th>
                     </tr>
                 </thead>
                 <tbody id="results">
@@ -61,7 +58,9 @@
 
     <footer class="footer">
         <div class="content has-text-centered">
-            <div>数据仅供参考 经常查表可以跪得容易</div>
+            <div>MCC 严重并发症与合并症</div>
+            <div>CC 并发症与合并症</div>
+            <div>经常查表可以跪得容易 数据仅供参考</div>
             <div>国家医疗保障疾病诊断相关分组(CHS-DRG) 分组方案（1.1版）</div>
             <div>基于医保疾病诊断和手术操作分类与代码2.0版</div>
             <div>
