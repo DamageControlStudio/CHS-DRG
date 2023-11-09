@@ -20,7 +20,11 @@
                 <li class="is-active"><a href="#" aria-current="page">DRG 分组查询工具</a></li>
             </ul>
         </nav>
+
+        <div id="messages">
+        </div>
     </div>
+
 
     <div class="section">
         <div class="field has-addons">
@@ -56,9 +60,12 @@
         </div>
     </div>
 
+    <script src="./static/2023.weights.js"></script>
+    <script src="./static/main.js"></script>
+
     <footer class="footer">
         <div class="content has-text-centered">
-            <div>哈尔滨I级费率 职工 12165.26 居民 12099.85</div>
+            <div>哈尔滨I级费率 职工 <script>document.write(rates["职工"]);</script> 居民 <script>document.write(rates["居民"]);</script></div>
             <div>MCC 严重并发症与合并症 CC 并发症与合并症</div>
             <div>-------</div>
             <div>经常查表可以跪得容易 数据仅供参考</div>
@@ -74,9 +81,6 @@
             </div>
         </div>
     </footer>
-
-    <script src="./static/2023.weights.js"></script>
-    <script src="./static/main.js"></script>
 </body>
 
 </html>
