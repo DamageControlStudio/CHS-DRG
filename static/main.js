@@ -134,7 +134,8 @@ function financial(x) {
 function addMessage(drg_group) {
     if($("#" + drg_group).length == 0) {
         var currentMessages = $("#messages").html();
-        var drgMessage = "【" + drg_group + "】";
+        let groupname = names[drg_group];
+        var drgMessage = "【" + drg_group + " " + groupname + "】";
         let fee1 = weights[drg_group] * rates["职工"];
         let fee2 = weights[drg_group] * rates["居民"];
         drgMessage += " 职工 " + financial(fee1) + " 职工低倍 " + financial(fee1 * 0.4);
