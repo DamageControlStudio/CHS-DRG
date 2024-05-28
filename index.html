@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="./static/font-awesome/css/all.min.css">
     <script src="./static/jquery.min.js"></script>
     <script src="./static/sql-wasm.js"></script>
+    <script src="./static/2024.weights.js"></script>
     <link rel="shortcut icon" href="./static/favicon.ico">
 </head>
 
@@ -25,8 +26,16 @@
         </div>
     </div>
 
-
     <div class="section">
+        <span class="tag">哈尔滨</span>
+        <span class="tag">I级费率</span>
+        <span class="tag">2024</span>
+        <span class="tag">职工
+            <script>document.write(rates["职工"]);</script>
+        </span>
+        <span class="tag">居民
+            <script>document.write(rates["居民"]);</script>
+        </span>
         <div class="field has-addons">
             <p class="control is-expanded has-icons-left">
                 <input id="search_text" class="input" type="text" placeholder="正在加载数据库..." disabled>
@@ -60,14 +69,14 @@
         </div>
     </div>
 
-    <script src="./static/2024.weights.js"></script>
-    <script src="./static/main.js"></script>
+    <div class="section">
+        <script src="./static/main.js"></script>
+    </div>
 
     <footer class="footer">
         <div class="content has-text-centered">
-            <div>2024 哈尔滨 I级费率 职工 <script>document.write(rates["职工"]);</script> 居民 <script>document.write(rates["居民"]);</script></div>
-            <div>国家医疗保障疾病诊断相关分组CHS-DRG分组方案1.1版</div>
-            <div>基于医保疾病诊断和手术操作分类与代码2.0版</div>
+            <div>国家医疗保障疾病诊断相关分组 CHS-DRG 分组方案 1.1 版</div>
+            <div>基于医保疾病诊断和手术操作分类与代码 2.0 版</div>
         </div>
     </footer>
 </body>
