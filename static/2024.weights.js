@@ -1,4 +1,4 @@
-let description = "2024 哈尔滨 I 级费率";
+let description = "哈尔滨 I 级费率 2024";
 
 let rates = {
     "职工": "12252.70",
